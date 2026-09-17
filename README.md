@@ -4,12 +4,6 @@
 
 The **Smart Family Card Management System** is a database-driven web application developed as a project for the Database Management System lab. It provides a digital platform for citizens to apply for family cards and allows administrators to review applications, manage beneficiaries, monitor payments, and handle complaints.
 
-## Project Team
-
-- **M. Arman Mahmud**
-- **Shihab**
-- **Badhan**
-- **Ruhul**
 
 ## Project Objectives
 
@@ -165,6 +159,13 @@ Open `frontend/index.html` with the VS Code Live Server extension or another loc
 - `/api/payments` - payment records and disbursement operations
 - `/api/grievances` - complaints and resolutions
 - `/api/audit` - administrative audit logs
+
+## Project Team
+
+- **M. Arman Mahmud**
+- **Shihab**
+- **Badhan**
+- **Ruhul**
 
 ## Academic Purpose
 
