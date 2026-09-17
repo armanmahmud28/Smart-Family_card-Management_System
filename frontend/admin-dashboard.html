@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>স্মার্ট ফ্যামিলি কার্ড সিস্টেম - অ্যাডমিন ড্যাশবোর্ড</title>
+  <meta name="description" content="অ্যাডমিন প্যানেল - স্মার্ট ফ্যামিলি কার্ড সিস্টেম">
+  <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+  <div class="dashboard-wrapper">
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <i class="fa-solid fa-shield-halved"></i>
+        <h2>অ্যাডমিন প্যানেল</h2>
+      </div>
+      <ul class="sidebar-menu">
+        <li class="active"><a href="admin-dashboard.html"><i class="fa-solid fa-grid-2"></i> <span>ড্যাশবোর্ড</span></a></li>
+        <li><a href="admin-applications.html"><i class="fa-solid fa-file-lines"></i> <span>আবেদনসমূহ</span></a></li>
+        <li><a href="admin-payments.html"><i class="fa-solid fa-money-bill-transfer"></i> <span>ভাতা পরিচালনা</span></a></li>
+        <li><a href="admin-complaints.html"><i class="fa-solid fa-triangle-exclamation"></i> <span>অভিযোগসমূহ</span></a></li>
+        <li><a href="#" onclick="logout()" class="logout-link"><i class="fa-solid fa-right-from-bracket"></i> <span>লগআউট</span></a></li>
+      </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <header class="topbar">
+        <button class="menu-toggle" onclick="document.getElementById('sidebar').classList.toggle('mobile-open')">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+        <div class="user-profile">
+          <div class="user-info">
+            <span class="user-name">অফিসার</span>
+            <span class="user-role">কর্মকর্তা</span>
+          </div>
+          <div class="avatar-circle">
+            <i class="fa-solid fa-user-tie"></i>
+          </div>
+        </div>
+      </header>
+
+      <div class="content animate-fade-up">
+        <div class="page-header">
+          <h1 class="page-title">অ্যাডমিন ড্যাশবোর্ড</h1>
+          <p class="page-subtitle">আপনার এলাকার সিস্টেমের সার্বিক পরিস্থিতি</p>
+        </div>
+
+        <!-- Stat Cards -->
+        <div class="stat-grid">
+          <div class="stat-card">
+            <div class="stat-icon blue"><i class="fa-solid fa-file-lines"></i></div>
+            <div class="stat-details">
+              <h3 id="stat-total">০</h3>
+              <p>সর্বমোট আবেদন</p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon amber"><i class="fa-solid fa-clock"></i></div>
+            <div class="stat-details">
+              <h3 id="stat-pending">০</h3>
+              <p>অপেক্ষমান</p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon emerald"><i class="fa-solid fa-circle-check"></i></div>
+            <div class="stat-details">
+              <h3 id="stat-approved">০</h3>
+              <p>অনুমোদিত</p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon red"><i class="fa-solid fa-circle-xmark"></i></div>
+            <div class="stat-details">
+              <h3 id="stat-rejected">০</h3>
+              <p>বাতিল</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Applications Table -->
+        <div class="table-container">
+          <div class="table-header">
+            <h3>নতুন আবেদনসমূহ (রিভিউয়ের জন্য)</h3>
+            <a href="admin-applications.html" class="btn-outline"><i class="fa-solid fa-list"></i> সবগুলো দেখুন</a>
+          </div>
+          <table id="admin-apps-table">
+            <thead>
+              <tr>
+                <th>আইডি</th>
+                <th>নাগরিকের নাম</th>
+                <th>ফোন নম্বর</th>
+                <th>যোগ্যতা</th>
+                <th>ফ্রড রিস্ক</th>
+                <th>অ্যাকশন</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td colspan="6" class="text-center">লোড হচ্ছে...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="js/main.js"></script>
+  <script>
+    function logout() {
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
+      localStorage.removeItem('role');
+      localStorage.removeItem('adminName');
+      localStorage.removeItem('adminRole');
+      window.location.href = 'index.html';
+    }
+
+    // Display admin name
+    const adminName = localStorage.getItem('adminName');
+    const adminRole = localStorage.getItem('adminRole');
+    if (adminName) {
+      const nameEl = document.querySelector('.user-name');
+      if (nameEl) nameEl.textContent = adminName;
+    }
+    if (adminRole) {
+      const roleEl = document.querySelector('.user-role');
+      const roleMap = { 'super_admin': 'সুপার অ্যাডমিন', 'admin': 'অ্যাডমিন', 'officer': 'কর্মকর্তা' };
+      if (roleEl) roleEl.textContent = roleMap[adminRole] || 'কর্মকর্তা';
+    }
+
+    function toBanglaNum(num) {
+      const banglaDigits = ['০','১','২','৩','৪','৫','৬','৭','৮','৯'];
+      return String(num).replace(/[0-9]/g, d => banglaDigits[d]);
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      const res = await fetchWithAuth('/admin/applications');
+      
+      if (res.success) {
+        // Dynamic Stats
+        if (res.stats) {
+          document.getElementById('stat-total').textContent = toBanglaNum(res.stats.total);
+          document.getElementById('stat-pending').textContent = toBanglaNum(res.stats.pending);
+          document.getElementById('stat-approved').textContent = toBanglaNum(res.stats.approved);
+          document.getElementById('stat-rejected').textContent = toBanglaNum(res.stats.rejected);
+        }
+
+        // Table
+        const tbody = document.querySelector('#admin-apps-table tbody');
+        tbody.innerHTML = '';
+
+        if (!res.applications || res.applications.length === 0) {
+          tbody.innerHTML = `
+            <tr><td colspan="6">
+              <div class="empty-state">
+                <i class="fa-solid fa-inbox"></i>
+                <h3>কোনো আবেদন পাওয়া যায়নি</h3>
+                <p>আপনার এলাকায় এখনো কোনো আবেদন জমা হয়নি</p>
+              </div>
+            </td></tr>`;
+        } else {
+          // Show pending applications first
+          const pendingApps = res.applications.filter(a => a.status === 'submitted' || a.status === 'under_review').slice(0, 10);
+          const displayApps = pendingApps.length > 0 ? pendingApps : res.applications.slice(0, 10);
+
+          displayApps.forEach(app => {
+            const citizenName = app.citizen ? app.citizen.full_name : 'অজানা';
+            const citizenPhone = app.citizen ? app.citizen.phone : 'অজানা';
+            
+            const eligScore = app.eligibility_score || 0;
+            const fraudScore = app.fraud_risk_score || 0;
+            
+            let eligClass = eligScore >= 70 ? 'approved' : eligScore >= 40 ? 'pending' : 'rejected';
+            let fraudClass = fraudScore <= 30 ? 'approved' : fraudScore <= 60 ? 'pending' : 'rejected';
+
+            tbody.innerHTML += `
+              <tr>
+                <td>#APP-${app.id}</td>
+                <td>${citizenName}</td>
+                <td>${citizenPhone}</td>
+                <td><span class="badge ${eligClass}">${toBanglaNum(eligScore)}</span></td>
+                <td><span class="badge ${fraudClass}">${toBanglaNum(fraudScore)}</span></td>
+                <td>
+                  <button class="btn-approve" onclick="window.location.href='admin-applications.html'">
+                    <i class="fa-solid fa-eye"></i> রিভিউ
+                  </button>
+                </td>
+              </tr>
+            `;
+          });
+
+          if (displayApps.length === 0) {
+            tbody.innerHTML = `
+              <tr><td colspan="6">
+                <div class="empty-state">
+                  <i class="fa-solid fa-check-double"></i>
+                  <h3>রিভিউয়ের জন্য কোনো আবেদন নেই</h3>
+                  <p>সকল আবেদন পর্যালোচনা সম্পন্ন হয়েছে</p>
+                </div>
+              </td></tr>`;
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>স্মার্ট ফ্যামিলি কার্ড সিস্টেম - লগইন</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="login-container">
+    <div class="login-left">
+      <div class="login-left-content animate-fade-up">
+        <i class="fa-solid fa-people-roof" style="font-size: 5rem; color: #a7f3d0; margin-bottom: 2rem; animation: float 6s ease-in-out infinite;"></i>
+        <h1>স্মার্ট ফ্যামিলি কার্ড সিস্টেম</h1>
+        <p>স্বচ্ছতা ও সমতা নিশ্চিতে বাংলাদেশ সরকারের একটি উদ্যোগ</p>
+      </div>
+    </div>
+    <div class="login-right">
+      <div class="login-card animate-fade-up" style="animation-delay: 0.2s;">
+        <h2>স্বাগতম, লগইন করুন</h2>
+        <div id="alert-box" class="alert"></div>
+        <form id="login-form">
+          <div class="role-selector">
+            <label>
+              <input type="radio" name="role" value="user" checked> <i class="fa-solid fa-user"></i> নাগরিক
+            </label>
+            <label>
+              <input type="radio" name="role" value="admin"> <i class="fa-solid fa-user-shield"></i> কর্মকর্তা
+            </label>
+          </div>
+
+          <div class="form-group" id="user-id-group" style="display: none;">
+            <label for="adminPhone">কর্মকর্তা মোবাইল নম্বর</label>
+            <div style="position: relative;">
+              <i class="fa-solid fa-phone" style="position: absolute; left: 15px; top: 15px; color: rgba(255,255,255,0.4);"></i>
+              <input type="text" id="adminPhone" placeholder="আপনার মোবাইল নম্বর লিখুন" style="padding-left: 40px;">
+            </div>
+          </div>
+
+          <div class="form-group" id="phone-group">
+            <label for="phone">মোবাইল নম্বর</label>
+            <div style="position: relative;">
+              <i class="fa-solid fa-phone" style="position: absolute; left: 15px; top: 15px; color: rgba(255,255,255,0.4);"></i>
+              <input type="text" id="phone" placeholder="আপনার মোবাইল নম্বর লিখুন" style="padding-left: 40px;">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="password">পাসওয়ার্ড</label>
+            <div style="position: relative;">
+              <i class="fa-solid fa-lock" style="position: absolute; left: 15px; top: 15px; color: rgba(255,255,255,0.4);"></i>
+              <input type="password" id="password" autocomplete="current-password" placeholder="আপনার পাসওয়ার্ড লিখুন" required style="padding-left: 40px;">
+            </div>
+            <a href="forgot-password.html" class="forgot-password">পাসওয়ার্ড ভুলে গেছেন?</a>
+          </div>
+
+          <button type="submit" class="btn-primary">লগইন করুন <i class="fa-solid fa-arrow-right"></i></button>
+        </form>
+        <div class="login-divider">অথবা</div>
+        <button type="button" id="register-btn" class="btn-secondary">নতুন নাগরিক? নিবন্ধন করুন</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/main.js"></script>
+  <script src="js/auth.js"></script>
+</body>
+</html>

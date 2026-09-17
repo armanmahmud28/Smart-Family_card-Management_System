@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>স্মার্ট ফ্যামিলি কার্ড সিস্টেম - ড্যাশবোর্ড</title>
+  <meta name="description" content="নাগরিক ড্যাশবোর্ড - স্মার্ট ফ্যামিলি কার্ড সিস্টেম">
+  <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+  <div class="dashboard-wrapper">
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <i class="fa-solid fa-people-roof"></i>
+        <h2>স্মার্ট কার্ড সিস্টেম</h2>
+      </div>
+      <ul class="sidebar-menu">
+        <li class="active"><a href="user-dashboard.html"><i class="fa-solid fa-grid-2"></i> <span>ড্যাশবোর্ড</span></a></li>
+        <li><a href="apply.html"><i class="fa-solid fa-file-circle-plus"></i> <span>আবেদন করুন</span></a></li>
+        <li><a href="status.html"><i class="fa-solid fa-bars-progress"></i> <span>আবেদনের অবস্থা</span></a></li>
+        <li><a href="profile.html"><i class="fa-solid fa-user-gear"></i> <span>প্রোফাইল</span></a></li>
+        <li><a href="#" onclick="logout()" class="logout-link"><i class="fa-solid fa-right-from-bracket"></i> <span>লগআউট</span></a></li>
+      </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <header class="topbar">
+        <button class="menu-toggle" onclick="document.getElementById('sidebar').classList.toggle('mobile-open')">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+        <div class="user-profile">
+          <div class="user-info">
+            <span class="user-name" id="display-name">লোড হচ্ছে...</span>
+            <span class="user-role">নাগরিক</span>
+          </div>
+          <div class="avatar-circle" id="avatar-circle">
+            <i class="fa-solid fa-user"></i>
+          </div>
+        </div>
+      </header>
+
+      <div class="content animate-fade-up">
+        <div class="page-header">
+          <h1 class="page-title" id="welcome-title">স্বাগতম, নাগরিক</h1>
+          <p class="page-subtitle">আপনার স্মার্ট ফ্যামিলি কার্ডের ড্যাশবোর্ডে আপনাকে স্বাগতম</p>
+        </div>
+
+        <!-- Smart Family Card (shows only if approved) -->
+        <div class="smart-card-container" id="smart-card-section" style="display: none;">
+          <div class="smart-card">
+            <div class="smart-card-status">
+              <i class="fa-solid fa-circle-check"></i> সক্রিয়
+            </div>
+            <div class="smart-card-content">
+              <div class="smart-card-header">
+                <div class="smart-card-logo">
+                  <i class="fa-solid fa-people-roof"></i>
+                  <span>SMART FAMILY CARD</span>
+                </div>
+                <div class="smart-card-chip"></div>
+              </div>
+              <div class="smart-card-number" id="card-number">FC-BD-2026-XXXXXX</div>
+              <div class="smart-card-details">
+                <div>
+                  <div class="smart-card-detail-group">
+                    <label>কার্ডধারী</label>
+                    <span id="card-holder-name">-</span>
+                  </div>
+                  <div class="smart-card-detail-group" style="margin-top: 0.5rem;">
+                    <label>জারি তারিখ</label>
+                    <span id="card-issue-date">-</span>
+                  </div>
+                </div>
+                <div class="smart-card-qr">
+                  <i class="fa-solid fa-qrcode"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stat Cards -->
+        <div class="stat-grid">
+          <div class="stat-card">
+            <div class="stat-icon emerald"><i class="fa-solid fa-file-lines"></i></div>
+            <div class="stat-details">
+              <h3 id="stat-total-apps">০</h3>
+              <p>সর্বমোট আবেদন</p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon blue"><i class="fa-solid fa-hourglass-half"></i></div>
+            <div class="stat-details">
+              <h3 id="stat-pending">০</h3>
+              <p>অপেক্ষমান</p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon amber"><i class="fa-solid fa-award"></i></div>
+            <div class="stat-details">
+              <h3 id="stat-score">-</h3>
+              <p>যোগ্যতা স্কোর</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Applications Table -->
+        <div class="table-container">
+          <div class="table-header">
+            <h3>আমার আবেদনসমূহ</h3>
+            <a href="apply.html" class="btn-outline"><i class="fa-solid fa-plus"></i> নতুন আবেদন</a>
+          </div>
+          <table id="applications-table">
+            <thead>
+              <tr>
+                <th>আইডি</th>
+                <th>তারিখ</th>
+                <th>জেলা</th>
+                <th>অবস্থা</th>
+                <th>স্কোর</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td colspan="5" class="text-center">লোড হচ্ছে...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="js/main.js"></script>
+  <script>
+    function logout() {
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
+      localStorage.removeItem('role');
+      window.location.href = 'index.html';
+    }
+
+    function toBanglaNum(num) {
+      const banglaDigits = ['০','১','২','৩','৪','৫','৬','৭','৮','৯'];
+      return String(num).replace(/[0-9]/g, d => banglaDigits[d]);
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      const res = await fetchWithAuth('/applications/my');
+      
+      if (res.success) {
+        // Populate citizen info
+        if (res.citizen) {
+          document.getElementById('display-name').textContent = res.citizen.full_name || 'নাগরিক';
+          document.getElementById('welcome-title').textContent = `স্বাগতম, ${res.citizen.full_name || 'নাগরিক'}`;
+          const initials = (res.citizen.full_name || 'N').charAt(0).toUpperCase();
+          document.getElementById('avatar-circle').innerHTML = `<span>${initials}</span>`;
+        }
+
+        // Stats
+        const apps = res.applications || [];
+        document.getElementById('stat-total-apps').textContent = toBanglaNum(apps.length);
+        const pendingCount = apps.filter(a => a.status === 'submitted' || a.status === 'under_review').length;
+        document.getElementById('stat-pending').textContent = toBanglaNum(pendingCount);
+        
+        if (apps.length > 0) {
+          const latestScore = apps[0].eligibility_score || 0;
+          document.getElementById('stat-score').textContent = toBanglaNum(latestScore);
+        }
+
+        // Smart Card
+        if (res.familyCard) {
+          document.getElementById('smart-card-section').style.display = 'block';
+          document.getElementById('card-number').textContent = res.familyCard.card_number;
+          document.getElementById('card-holder-name').textContent = res.citizen ? res.citizen.full_name : '-';
+          if (res.familyCard.issue_date) {
+            document.getElementById('card-issue-date').textContent = new Date(res.familyCard.issue_date).toLocaleDateString('bn-BD');
+          }
+        }
+
+        // Applications Table
+        const tbody = document.querySelector('#applications-table tbody');
+        tbody.innerHTML = '';
+        
+        if (apps.length === 0) {
+          tbody.innerHTML = `
+            <tr><td colspan="5">
+              <div class="empty-state">
+                <i class="fa-solid fa-folder-open"></i>
+                <h3>কোনো আবেদন পাওয়া যায়নি</h3>
+                <p>নতুন আবেদন করতে উপরের বাটনে ক্লিক করুন</p>
+                <a href="apply.html" class="btn-primary" style="width: auto; display: inline-flex;">
+                  <i class="fa-solid fa-plus"></i> আবেদন করুন
+                </a>
+              </div>
+            </td></tr>`;
+        } else {
+          apps.forEach(app => {
+            const date = new Date(app.created_at).toLocaleDateString('bn-BD');
+            let statusClass = 'pending';
+            let statusText = 'অপেক্ষমান';
+            let statusIcon = 'fa-clock';
+            
+            if (app.status === 'approved') { statusClass = 'approved'; statusText = 'অনুমোদিত'; statusIcon = 'fa-circle-check'; }
+            if (app.status === 'rejected') { statusClass = 'rejected'; statusText = 'বাতিল'; statusIcon = 'fa-circle-xmark'; }
+            if (app.status === 'under_review') { statusClass = 'under_review'; statusText = 'পর্যালোচনাধীন'; statusIcon = 'fa-magnifying-glass'; }
+            
+            const districtName = app.District ? (app.District.name_bn || app.District.name_en) : '-';
+            
+            tbody.innerHTML += `
+              <tr>
+                <td>#APP-${app.id}</td>
+                <td>${date}</td>
+                <td>${districtName}</td>
+                <td><span class="badge ${statusClass}"><i class="fa-solid ${statusIcon}"></i> ${statusText}</span></td>
+                <td>${toBanglaNum(app.eligibility_score || 0)}</td>
+              </tr>
+            `;
+          });
+        }
+      }
+    });
+  </script>
+</body>
+</html>

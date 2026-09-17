@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>স্মার্ট ফ্যামিলি কার্ড সিস্টেম - নিবন্ধন</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="login-container">
+    <div class="login-left" style="background: rgba(0,0,0,0.2);">
+      <div class="login-left-content animate-fade-up">
+        <i class="fa-solid fa-address-card" style="font-size: 5rem; color: #a7f3d0; margin-bottom: 2rem; animation: float 6s ease-in-out infinite;"></i>
+        <h1>নাগরিক নিবন্ধন</h1>
+        <p>নতুন স্মার্ট ফ্যামিলি কার্ডের জন্য অ্যাকাউন্ট তৈরি করুন</p>
+      </div>
+    </div>
+    <div class="login-right">
+      <div class="login-card animate-fade-up" style="max-width: 500px;">
+        <h2>নতুন অ্যাকাউন্ট খুলুন</h2>
+        <div id="alert-box" class="alert"></div>
+        <form id="register-form">
+          
+          <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label for="name_bn">নাম (বাংলায়)</label>
+              <input type="text" id="name_bn" required>
+            </div>
+            <div class="form-group">
+              <label for="name_en">নাম (ইংরেজিতে)</label>
+              <input type="text" id="name_en" required>
+            </div>
+          </div>
+
+          <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label for="nid_number">জাতীয় পরিচয়পত্র নম্বর (NID)</label>
+              <input type="text" id="nid_number" required>
+            </div>
+            <div class="form-group">
+              <label for="phone">মোবাইল নম্বর</label>
+              <input type="text" id="phone" required>
+            </div>
+          </div>
+
+          <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label for="date_of_birth">জন্ম তারিখ</label>
+              <input type="date" id="date_of_birth" required style="color-scheme: dark;">
+            </div>
+            <div class="form-group">
+              <label for="gender">লিঙ্গ</label>
+              <select id="gender" required>
+                <option value="male">পুরুষ</option>
+                <option value="female">মহিলা</option>
+                <option value="other">অন্যান্য</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="address">ঠিকানা</label>
+            <input type="text" id="address" required>
+          </div>
+
+          <div class="form-group">
+            <label for="password">পাসওয়ার্ড সেট করুন</label>
+            <input type="password" id="password" required>
+          </div>
+
+          <button type="submit" class="btn-primary" style="margin-top: 1rem;">নিবন্ধন করুন <i class="fa-solid fa-check"></i></button>
+        </form>
+        <div class="login-divider">অথবা</div>
+        <button type="button" onclick="window.location.href='index.html'" class="btn-secondary">ইতোমধ্যে অ্যাকাউন্ট আছে? লগইন করুন</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/main.js"></script>
+  <script>
+    document.getElementById('register-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const payload = {
+        full_name: document.getElementById('name_bn').value + ' (' + document.getElementById('name_en').value + ')',
+        nid: document.getElementById('nid_number').value,
+        phone: document.getElementById('phone').value,
+        date_of_birth: document.getElementById('date_of_birth').value,
+        gender: document.getElementById('gender').value,
+        address: document.getElementById('address').value,
+        password: document.getElementById('password').value,
+      };
+
+      try {
+        const response = await fetch(`${API_URL}/auth/register`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+          localStorage.setItem('accessToken', data.accessToken);
+          localStorage.setItem('refreshToken', data.refreshToken);
+          localStorage.setItem('role', 'citizen');
+          window.location.href = 'user-dashboard.html';
+        } else {
+          showAlert(data.message, 'error');
+        }
+      } catch (err) {
+        showAlert('সার্ভারে সমস্যা হচ্ছে। দয়া করে অপেক্ষা করুন (Server Error)', 'error');
+      }
+    });
+  </script>
+</body>
+</html>

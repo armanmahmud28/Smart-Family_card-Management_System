@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>স্মার্ট ফ্যামিলি কার্ড সিস্টেম - প্রোফাইল</title>
+  <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+  <div class="dashboard-wrapper">
+    <!-- Sidebar -->
+    <nav class="sidebar">
+      <div class="sidebar-header">
+        <i class="fa-solid fa-people-roof" style="color: var(--accent); font-size: 1.8rem;"></i>
+        <h2>স্মার্ট কার্ড সিস্টেম</h2>
+      </div>
+      <ul class="sidebar-menu">
+        <li><a href="user-dashboard.html">ড্যাশবোর্ড</a></li>
+        <li><a href="apply.html">আবেদন করুন</a></li>
+        <li><a href="status.html">আবেদন অবস্থা</a></li>
+        <li class="active"><a href="profile.html">প্রোফাইল</a></li>
+        <li style="margin-top: auto;"><a href="#logout" class="text-danger">লগআউট</a></li>
+      </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <header class="topbar">
+        <div></div>
+        <div class="user-profile">
+          <div class="user-info text-right">
+            <span class="user-name">নাগরিক</span>
+            <span class="user-role">নাগরিক</span>
+          </div>
+        </div>
+      </header>
+
+      <div class="content animate-fade-up">
+        <div class="apply-card" style="margin-top: 2rem;">
+          <div style="text-align: center; margin-bottom: 2rem;">
+            <div style="width: 100px; height: 100px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--secondary)); display: flex; align-items: center; justify-content: center; font-size: 3rem; color: white; margin: 0 auto 1rem auto; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);">
+              <i class="fa-solid fa-user"></i>
+            </div>
+            <h2 id="profile-name">লোড হচ্ছে...</h2>
+            <p class="text-muted">নাগরিক অ্যাকাউন্ট</p>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+            <div>
+              <p class="text-muted" style="margin-bottom: 0.2rem; font-size: 0.9rem;">মোবাইল নম্বর</p>
+              <h4 id="profile-phone" style="margin-bottom: 1rem;">-</h4>
+              
+              <p class="text-muted" style="margin-bottom: 0.2rem; font-size: 0.9rem;">জাতীয় পরিচয়পত্র (NID)</p>
+              <h4 id="profile-nid" style="margin-bottom: 1rem;">-</h4>
+            </div>
+            <div>
+              <p class="text-muted" style="margin-bottom: 0.2rem; font-size: 0.9rem;">জন্ম তারিখ</p>
+              <h4 id="profile-dob" style="margin-bottom: 1rem;">-</h4>
+              
+              <p class="text-muted" style="margin-bottom: 0.2rem; font-size: 0.9rem;">লিঙ্গ</p>
+              <h4 id="profile-gender" style="margin-bottom: 1rem;">-</h4>
+            </div>
+          </div>
+
+          <div style="margin-top: 2rem; border-top: 1px solid var(--glass-border); padding-top: 2rem;">
+            <p class="text-muted" style="margin-bottom: 0.2rem; font-size: 0.9rem;">ঠিকানা</p>
+            <h4 id="profile-address">-</h4>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="js/main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const token = localStorage.getItem('accessToken');
+      if (token) {
+        try {
+          const response = await fetchWithAuth('/auth/me');
+          if (response.success && response.data) {
+            const user = response.data;
+            document.getElementById('profile-name').textContent = user.full_name || "সম্মানিত নাগরিক";
+            document.getElementById('profile-phone').textContent = user.phone || "-";
+            document.getElementById('profile-nid').textContent = user.nid || "-";
+            document.getElementById('profile-dob').textContent = user.date_of_birth ? new Date(user.date_of_birth).toLocaleDateString('en-GB') : "-";
+            
+            let genderText = "-";
+            if (user.gender === 'male' || user.gender === 'পুরুষ') genderText = 'পুরুষ';
+            else if (user.gender === 'female' || user.gender === 'নারী') genderText = 'নারী';
+            else genderText = user.gender || "-";
+            
+            document.getElementById('profile-gender').textContent = genderText;
+            document.getElementById('profile-address').textContent = user.address || "-";
+
+            // Update the Topbar Profile Name dynamically
+            const topbarNameElements = document.querySelectorAll('.user-name');
+            topbarNameElements.forEach(el => {
+                el.textContent = user.full_name || "নাগরিক";
+            });
+          }
+        } catch (err) {
+          console.error('Failed to fetch profile:', err);
+        }
+      } else {
+        // If no token exists, redirect to login
+        window.location.href = 'index.html';
+      }
+    });
+  </script>
+</body>
+</html>

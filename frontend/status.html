@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>স্মার্ট ফ্যামিলি কার্ড সিস্টেম - আবেদনের অবস্থা</title>
+  <meta name="description" content="আবেদনের অবস্থা পর্যবেক্ষণ - স্মার্ট ফ্যামিলি কার্ড সিস্টেম">
+  <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+  <div class="dashboard-wrapper">
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <i class="fa-solid fa-people-roof"></i>
+        <h2>স্মার্ট কার্ড সিস্টেম</h2>
+      </div>
+      <ul class="sidebar-menu">
+        <li><a href="user-dashboard.html"><i class="fa-solid fa-grid-2"></i> <span>ড্যাশবোর্ড</span></a></li>
+        <li><a href="apply.html"><i class="fa-solid fa-file-circle-plus"></i> <span>আবেদন করুন</span></a></li>
+        <li class="active"><a href="status.html"><i class="fa-solid fa-bars-progress"></i> <span>আবেদনের অবস্থা</span></a></li>
+        <li><a href="profile.html"><i class="fa-solid fa-user-gear"></i> <span>প্রোফাইল</span></a></li>
+        <li><a href="#" onclick="logout()" class="logout-link"><i class="fa-solid fa-right-from-bracket"></i> <span>লগআউট</span></a></li>
+      </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <header class="topbar">
+        <button class="menu-toggle" onclick="document.getElementById('sidebar').classList.toggle('mobile-open')">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+        <div class="user-profile">
+          <div class="user-info">
+            <span class="user-name" id="display-name">নাগরিক</span>
+            <span class="user-role">নাগরিক</span>
+          </div>
+          <div class="avatar-circle">
+            <i class="fa-solid fa-user"></i>
+          </div>
+        </div>
+      </header>
+
+      <div class="content animate-fade-up">
+        <div class="page-header">
+          <h1 class="page-title">আবেদনের অবস্থা</h1>
+          <p class="page-subtitle">আপনার আবেদনের বিস্তারিত অগ্রগতি দেখুন</p>
+        </div>
+
+        <!-- No Application State -->
+        <div id="no-application" style="display: none;">
+          <div class="table-container">
+            <div class="empty-state">
+              <i class="fa-solid fa-folder-open"></i>
+              <h3>আপনার কোনো আবেদন নেই</h3>
+              <p>স্মার্ট ফ্যামিলি কার্ডের জন্য এখনই আবেদন করুন</p>
+              <a href="apply.html" class="btn-primary" style="width: auto; display: inline-flex;">
+                <i class="fa-solid fa-plus"></i> আবেদন করুন
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Application Details -->
+        <div id="application-details" style="display: none;">
+          <!-- Status Summary Cards -->
+          <div class="status-summary">
+            <div class="status-summary-card">
+              <span class="status-value" id="summary-id" style="color: var(--accent);">#APP-0</span>
+              <span class="status-label">আবেদনের আইডি</span>
+            </div>
+            <div class="status-summary-card">
+              <span class="status-value" id="summary-status" style="color: #fbbf24;">-</span>
+              <span class="status-label">বর্তমান অবস্থা</span>
+            </div>
+            <div class="status-summary-card">
+              <span class="status-value" id="summary-score" style="color: #60a5fa;">-</span>
+              <span class="status-label">যোগ্যতা স্কোর</span>
+            </div>
+            <div class="status-summary-card">
+              <span class="status-value" id="summary-date" style="color: var(--text-muted); font-size: 1.2rem;">-</span>
+              <span class="status-label">আবেদনের তারিখ</span>
+            </div>
+          </div>
+
+          <!-- Timeline -->
+          <div class="table-container">
+            <div class="table-header">
+              <h3><i class="fa-solid fa-timeline"></i> আবেদনের অগ্রগতি</h3>
+            </div>
+            <div class="timeline" id="timeline-container">
+              <!-- Timeline steps will be populated dynamically -->
+            </div>
+          </div>
+
+          <!-- Remarks Section -->
+          <div class="table-container" id="remarks-section" style="display: none; margin-top: 1.5rem;">
+            <div class="table-header">
+              <h3><i class="fa-solid fa-comment-dots"></i> কর্মকর্তার মন্তব্য</h3>
+            </div>
+            <p id="remarks-text" style="color: var(--text-muted); line-height: 1.8;"></p>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="js/main.js"></script>
+  <script>
+    function logout() {
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
+      localStorage.removeItem('role');
+      window.location.href = 'index.html';
+    }
+
+    function toBanglaNum(num) {
+      const banglaDigits = ['০','১','২','৩','৪','৫','৬','৭','৮','৯'];
+      return String(num).replace(/[0-9]/g, d => banglaDigits[d]);
+    }
+
+    function getTimelineSteps(status, createdAt, updatedAt) {
+      const steps = [
+        {
+          icon: 'fa-paper-plane',
+          title: 'আবেদন জমা দেওয়া হয়েছে',
+          desc: 'আপনার আবেদন সফলভাবে জমা হয়েছে এবং সিস্টেমে নিবন্ধিত হয়েছে।',
+          date: new Date(createdAt).toLocaleDateString('bn-BD'),
+          state: 'completed'
+        },
+        {
+          icon: 'fa-user-check',
+          title: 'স্থানীয় কর্মকর্তার যাচাই',
+          desc: 'আপনার আবেদন স্থানীয় কর্মকর্তা কর্তৃক যাচাই-বাছাই করা হচ্ছে।',
+          date: '',
+          state: 'pending'
+        },
+        {
+          icon: 'fa-building-columns',
+          title: 'জেলা প্রশাসনের অনুমোদন',
+          desc: 'জেলা প্রশাসক কর্তৃক চূড়ান্ত অনুমোদনের জন্য পর্যালোচনাধীন।',
+          date: '',
+          state: 'pending'
+        },
+        {
+          icon: 'fa-id-card',
+          title: 'ফ্যামিলি কার্ড জারি',
+          desc: 'আপনার স্মার্ট ফ্যামিলি কার্ড জারি করা হয়েছে।',
+          date: '',
+          state: 'pending'
+        }
+      ];
+
+      if (status === 'submitted') {
+        steps[1].state = 'active';
+        steps[1].desc = 'আপনার আবেদন বর্তমানে স্থানীয় কর্মকর্তার কাছে পর্যালোচনাধীন রয়েছে।';
+      } else if (status === 'under_review') {
+        steps[1].state = 'completed';
+        steps[1].desc = 'স্থানীয় কর্মকর্তা যাচাই সম্পন্ন করেছেন।';
+        steps[2].state = 'active';
+        steps[2].desc = 'আপনার আবেদন বর্তমানে জেলা প্রশাসকের কাছে চূড়ান্ত অনুমোদনের জন্য অপেক্ষমান।';
+      } else if (status === 'approved') {
+        steps[1].state = 'completed';
+        steps[1].desc = 'স্থানীয় কর্মকর্তা যাচাই সম্পন্ন করেছেন।';
+        steps[2].state = 'completed';
+        steps[2].desc = 'জেলা প্রশাসক কর্তৃক অনুমোদিত হয়েছে।';
+        steps[3].state = 'completed';
+        steps[3].desc = 'আপনার স্মার্ট ফ্যামিলি কার্ড সফলভাবে জারি করা হয়েছে! ড্যাশবোর্ডে গিয়ে কার্ডটি দেখুন।';
+        steps[3].date = new Date(updatedAt).toLocaleDateString('bn-BD');
+      } else if (status === 'rejected') {
+        steps[1].state = 'rejected';
+        steps[1].icon = 'fa-circle-xmark';
+        steps[1].title = 'আবেদন বাতিল করা হয়েছে';
+        steps[1].desc = 'দুঃখিত, আপনার আবেদন বাতিল করা হয়েছে। নিচে কর্মকর্তার মন্তব্য দেখুন।';
+        steps[1].date = new Date(updatedAt).toLocaleDateString('bn-BD');
+        steps.splice(2); // Remove remaining steps
+      }
+
+      return steps;
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      const res = await fetchWithAuth('/applications/my');
+      
+      if (res.success && res.citizen) {
+        document.getElementById('display-name').textContent = res.citizen.full_name || 'নাগরিক';
+      }
+
+      if (res.success && res.applications && res.applications.length > 0) {
+        document.getElementById('application-details').style.display = 'block';
+        
+        // Show the latest application
+        const app = res.applications[0];
+
+        // Summary cards
+        document.getElementById('summary-id').textContent = `#APP-${app.id}`;
+        
+        let statusText = 'অপেক্ষমান';
+        if (app.status === 'approved') statusText = '✅ অনুমোদিত';
+        if (app.status === 'rejected') statusText = '❌ বাতিল';
+        if (app.status === 'under_review') statusText = '🔍 পর্যালোচনাধীন';
+        document.getElementById('summary-status').textContent = statusText;
+        
+        document.getElementById('summary-score').textContent = toBanglaNum(app.eligibility_score || 0);
+        document.getElementById('summary-date').textContent = new Date(app.created_at).toLocaleDateString('bn-BD');
+
+        // Timeline
+        const steps = getTimelineSteps(app.status, app.created_at, app.updated_at);
+        const timelineContainer = document.getElementById('timeline-container');
+        timelineContainer.innerHTML = '';
+
+        steps.forEach((step, i) => {
+          timelineContainer.innerHTML += `
+            <div class="timeline-step" style="animation: fadeUp 0.5s ${i * 0.15}s both;">
+              <div class="timeline-icon ${step.state}">
+                <i class="fa-solid ${step.icon}"></i>
+              </div>
+              <div class="timeline-body">
+                <h4>${step.title}</h4>
+                <p>${step.desc}</p>
+                ${step.date ? `<div class="timeline-date"><i class="fa-regular fa-calendar"></i> ${step.date}</div>` : ''}
+              </div>
+            </div>
+          `;
+        });
+
+        // Remarks
+        if (app.remarks) {
+          document.getElementById('remarks-section').style.display = 'block';
+          document.getElementById('remarks-text').textContent = app.remarks;
+        }
+      } else {
+        document.getElementById('no-application').style.display = 'block';
+      }
+    });
+  </script>
+</body>
+</html>
